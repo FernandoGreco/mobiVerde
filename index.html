@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MobiVerde - MVP Carona Inteligente</title>
+    <!-- Leaflet CSS para o Mapa -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --bg-dark: #0f1117;
+            --card-bg: #181b23;
+            --border: #2a2e3d;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            padding: 20px 10px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        header {
+            background-color: #12141d;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            width: 28px;
+            height: 28px;
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        header h1 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        header h1 span {
+            color: var(--primary);
+        }
+
+        header p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .profile-switcher {
+            display: flex;
+            background-color: #0f1117;
+            margin: 15px 20px 0;
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: bold;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: #000;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background-color: #0f1117;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-location {
+            background-color: #0f1117;
+            border: 1px solid var(--border);
+            color: var(--primary);
+            padding: 0 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: #000;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-main:hover {
+            background-color: var(--primary-dark);
+            color: #fff;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 35px;
+            height: 35px;
+            border: 4px solid rgba(16, 185, 129, 0.2);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .match-card {
+            background-color: #0f1117;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .driver-name {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .ai-badge {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: var(--accent);
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .location-info {
+            background-color: #12141d;
+            border-left: 3px solid var(--primary);
+            padding: 8px 10px;
+            margin: 8px 0;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-radius: 0 6px 6px 0;
+        }
+
+        .location-info p {
+            margin: 3px 0;
+        }
+
+        .location-info strong {
+            color: var(--text);
+        }
+
+        /* Grade de Estatísticas Ajustada para 4 Métricas */
+        .match-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            background-color: #181b23;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            background-color: #0f1117;
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 0.85rem;
+            margin-top: 2px;
+        }
+
+        .btn-request {
+            width: 100%;
+            padding: 10px;
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            border-radius: 6px;
+            margin-top: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-request:hover {
+            background-color: var(--primary);
+            color: #000;
+        }
+
+        #mapSection {
+            display: none;
+            margin-top: 15px;
+        }
+
+        #map {
+            width: 100%;
+            height: 220px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-top: 10px;
+        }
+
+        .map-status {
+            background-color: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div class="brand">
+            <svg class="brand-logo" viewBox="0 0 24 24">
+                <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+                <path d="M8 10h8"></path>
+            </svg>
+            <h1>Mobi<span>Verde</span></h1>
+        </div>
+        <p>Caronas Inteligentes & Alívio Urbano</p>
+    </header>
+
+    <div class="profile-switcher">
+        <button class="tab-btn active" id="passengerTab" onclick="switchMode('passenger')">🙋‍♂️ Passageiro</button>
+        <button class="tab-btn" id="driverTab" onclick="switchMode('driver')">🚘 Motorista</button>
+    </div>
+
+    <div class="content">
+        <!-- TELA DO PASSAGEIRO -->
+        <div id="passengerView">
+            <form id="passengerForm">
+                <div class="form-group">
+                    <label>Sua Localização Atual</label>
+                    <div class="input-group">
+                        <input type="text" id="passOrigin" value="Obtendo localização GPS..." required>
+                        <button type="button" class="btn-location" onclick="getGPSLocation('passOrigin')">📍 GPS</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Para onde você quer ir?</label>
+                    <input type="text" id="passDestination" value="FIAP - Campus Paulista" required>
+                </div>
+
+                <button type="submit" class="btn-main">Buscar Motoristas no Caminho</button>
+            </form>
+        </div>
+
+        <!-- TELA DO MOTORISTA -->
+        <div id="driverView" style="display: none;">
+            <form id="driverForm">
+                <div class="form-group">
+                    <label>Sua Origem / Onde está agora?</label>
+                    <div class="input-group">
+                        <input type="text" id="driverOrigin" value="Obtendo localização GPS..." required>
+                        <button type="button" class="btn-location" onclick="getGPSLocation('driverOrigin')">📍 GPS</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Seu Destino Final</label>
+                    <input type="text" id="driverDestination" placeholder="Ex: Centro Empresarial" value="Av. Paulista, 1106" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Valor Cobrado por KM (R$)</label>
+                    <input type="number" id="driverRate" step="0.10" min="0.50" value="1.80" required>
+                </div>
+
+                <button type="submit" class="btn-main">Oferecer Carona na Rota</button>
+            </form>
+        </div>
+
+        <div class="loading" id="loadingState">
+            <div class="spinner"></div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);" id="loadingText">Calculando economia de trânsito e CO₂...</p>
+        </div>
+
+        <div class="results" id="resultsContainer">
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;" id="resultsTitle"></p>
+            <div id="matchesList"></div>
+        </div>
+
+        <div id="mapSection">
+            <div class="map-status" id="mapStatus">
+                🚘 <strong>Motorista a caminho!</strong>
+            </div>
+            <div id="map"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    let map, driverMarker, passengerMarker;
+
+    // Regra do Cálculo de Trânsito:
+    // Considera-se que 1 carro a menos na via economiza cerca de 6 metros de fila (4.5m do veículo + 1.5m de distância de segurança).
+    const METROS_POR_CARRO = 6;
+
+    function switchMode(mode) {
+        document.getElementById('passengerView').style.display = mode === 'passenger' ? 'block' : 'none';
+        document.getElementById('driverView').style.display = mode === 'driver' ? 'block' : 'none';
+        document.getElementById('passengerTab').classList.toggle('active', mode === 'passenger');
+        document.getElementById('driverTab').classList.toggle('active', mode === 'driver');
+        
+        document.getElementById('resultsContainer').style.display = 'none';
+        document.getElementById('mapSection').style.display = 'none';
+    }
+
+    function getGPSLocation(fieldId) {
+        const input = document.getElementById(fieldId);
+        input.value = "Buscando coordenadas GPS...";
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    input.value = `GPS (${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)})`;
+                },
+                () => { input.value = "São Paulo, SP (Localização Atual)"; }
+            );
+        } else {
+            input.value = "São Paulo, SP (Localização Atual)";
+        }
+    }
+
+    window.onload = () => {
+        getGPSLocation('passOrigin');
+        getGPSLocation('driverOrigin');
+    };
+
+    // SUBMIT PASSAGEIRO
+    document.getElementById('passengerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        showLoading("Cruzando rotas, valor de KM e espaço economizado no trânsito...");
+
+        setTimeout(() => {
+            hideLoading();
+            const dest = document.getElementById('passDestination').value;
+            const matchesList = document.getElementById('matchesList');
+            document.getElementById('resultsTitle').innerText = "Motoristas na sua rota:";
+            matchesList.innerHTML = '';
+
+            const drivers = [
+                { name: "Lucas Mendes", car: "Onix Prata", rate: 1.80, dist: 8.5, status: "A 300m de você", co2: "1.8 kg" },
+                { name: "Mariana Costa", car: "HB20 Branco", rate: 1.50, dist: 10.2, status: "Na avenida paralela", co2: "2.1 kg" }
+            ];
+
+            drivers.forEach(d => {
+                const totalCost = (d.rate * d.dist).toFixed(2);
+                const card = document.createElement('div');
+                card.className = 'match-card';
+                card.innerHTML = `
+                    <div class="match-header">
+                        <div>
+                            <div class="driver-name">${d.name}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">${d.car}</div>
+                        </div>
+                        <span class="ai-badge">R$ ${d.rate.toFixed(2)} / km</span>
+                    </div>
+                    <div class="location-info">
+                        <p>📍 <strong>Destino:</strong> ${dest}</p>
+                        <p>🚘 <strong>Posição:</strong> ${d.status}</p>
+                    </div>
+                    <div class="match-stats">
+                        <div class="stat-item">
+                            <span>Valor Total</span>
+                            <span class="stat-value">R$ ${totalCost}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Menos Veículos</span>
+                            <span class="stat-value">🚗 -1 Carro</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Menos Fila</span>
+                            <span class="stat-value">📏 -${METROS_POR_CARRO}m</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>CO₂ Evitado</span>
+                            <span class="stat-value">🌱 ${d.co2}</span>
+                        </div>
+                    </div>
+                    <button class="btn-request" onclick="acceptAndShowMap('${d.name}')">Solicitar Carona (R$ ${totalCost})</button>
+                `;
+                matchesList.appendChild(card);
+            });
+
+            document.getElementById('resultsContainer').style.display = 'block';
+        }, 1200);
+    });
+
+    // SUBMIT MOTORISTA
+    document.getElementById('driverForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        showLoading("Publicando rota e calculando redução de congestionamento...");
+
+        setTimeout(() => {
+            hideLoading();
+            const rate = parseFloat(document.getElementById('driverRate').value).toFixed(2);
+            const matchesList = document.getElementById('matchesList');
+            document.getElementById('resultsTitle').innerText = "Passageiros aguardando no seu percurso:";
+            matchesList.innerHTML = '';
+
+            const passengers = [
+                { name: "Carlos Eduardo", dest: "FIAP Paulista", dist: 6.2, status: "No seu trajeto (a 200m)" },
+                { name: "Ana Souza", dest: "Metrô Consolação", dist: 4.0, status: "Desvio de 1 min" }
+            ];
+
+            passengers.forEach(p => {
+                const earnings = (rate * p.dist).toFixed(2);
+                const card = document.createElement('div');
+                card.className = 'match-card';
+                card.innerHTML = `
+                    <div class="match-header">
+                        <div>
+                            <div class="driver-name">${p.name}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">${p.status}</div>
+                        </div>
+                        <span class="ai-badge">Sua Taxa: R$ ${rate}/km</span>
+                    </div>
+                    <div class="location-info">
+                        <p>🎯 <strong>Ponto de Desembarque:</strong> ${p.dest}</p>
+                    </div>
+                    <div class="match-stats">
+                        <div class="stat-item">
+                            <span>Sua Receita</span>
+                            <span class="stat-value" style="color:#34d399;">+ R$ ${earnings}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Menos Veículos</span>
+                            <span class="stat-value">🚗 -1 Carro</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Menos Fila</span>
+                            <span class="stat-value">📏 -${METROS_POR_CARRO}m</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Distância</span>
+                            <span class="stat-value">${p.dist} km</span>
+                        </div>
+                    </div>
+                    <button class="btn-request" onclick="acceptAndShowMap('${p.name}')">Aceitar Passageiro</button>
+                `;
+                matchesList.appendChild(card);
+            });
+
+            document.getElementById('resultsContainer').style.display = 'block';
+        }, 1200);
+    });
+
+    function showLoading(msg) {
+        document.getElementById('resultsContainer').style.display = 'none';
+        document.getElementById('mapSection').style.display = 'none';
+        document.getElementById('loadingText').innerText = msg;
+        document.getElementById('loadingState').style.display = 'block';
+    }
+
+    function hideLoading() {
+        document.getElementById('loadingState').style.display = 'none';
+    }
+
+    // MAPA DE APROXIMAÇÃO
+    function acceptAndShowMap(name) {
+        document.getElementById('resultsContainer').style.display = 'none';
+        document.getElementById('mapSection').style.display = 'block';
+
+        document.getElementById('mapStatus').innerHTML = `
+            ✅ <strong>Match Confirmado com ${name}!</strong><br>
+            <span style="font-size: 0.8rem; color: #a7f3d0;">
+                🚦 Impacto desta carona: <strong>-1 carro</strong> no trânsito e <strong>-6 metros</strong> de fila economizados nas vias!
+            </span>
+        `;
+
+        let driverLat = -23.5631, driverLng = -46.6543;
+        const passLat = -23.5615, passLng = -46.6560;
+
+        if (!map) {
+            map = L.map('map').setView([passLat, passLng], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            passengerMarker = L.marker([passLat, passLng]).addTo(map).bindPopup("Passageiro").openPopup();
+            driverMarker = L.marker([driverLat, driverLng]).addTo(map).bindPopup("Motorista");
+        }
+
+        const interval = setInterval(() => {
+            driverLat += (passLat - driverLat) * 0.2;
+            driverLng += (passLng - driverLng) * 0.2;
+            driverMarker.setLatLng([driverLat, driverLng]);
+
+            if (Math.abs(driverLat - passLat) < 0.0001) {
+                clearInterval(interval);
+                document.getElementById('mapStatus').innerHTML = `🎉 <strong>O motorista chegou ao ponto de encontro!</strong>`;
+            }
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>

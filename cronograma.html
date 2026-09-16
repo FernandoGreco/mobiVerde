@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech4Change 2026 - Cronograma da Dupla | FIAP</title>
+
+    <!-- Meta tags para prévia de compartilhamento no WhatsApp e Redes Sociais -->
+    <meta property="og:title" content="Tech4Change 2026 - Cronograma do Projeto">
+    <meta property="og:description" content="Planejamento e entregáveis para o projeto Tech4Change FIAP 2026.">
+    <meta property="og:type" content="website">
+
+    <style>
+        :root {
+            --primary: #ed145b; /* Rosa/Vermelho FIAP */
+            --primary-hover: #c80d4a;
+            --bg-dark: #0f1117;
+            --card-bg: #181b23;
+            --card-border: #2a2e3d;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            
+            --tag-biz-bg: rgba(245, 158, 11, 0.15);
+            --tag-biz-color: #fbbf24;
+            --tag-dev-bg: rgba(6, 182, 212, 0.15);
+            --tag-dev-color: #22d3ee;
+            --tag-joint-bg: rgba(16, 185, 129, 0.15);
+            --tag-joint-color: #34d399;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0 25px;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .deadline-badge {
+            background-color: var(--primary);
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 700;
+            display: inline-block;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 14px rgba(237, 20, 91, 0.3);
+        }
+
+        .alert-box {
+            background-color: rgba(237, 20, 91, 0.08);
+            border: 1px solid var(--primary);
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            color: #f87171;
+        }
+
+        .alert-box strong {
+            color: #ffffff;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin: 30px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Grid Responsivo de Entregáveis */
+        .deliverables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 35px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 18px;
+            border-radius: 10px;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+
+        .card h3 {
+            font-size: 1rem;
+            color: #ffffff;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Timeline Cronograma */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .day-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+        }
+
+        .day-card.terca::before { background-color: #06b6d4; }
+        .day-card.quarta::before { background-color: #3b82f6; }
+        .day-card.quinta::before { background-color: #6366f1; }
+        .day-card.sexta::before { background-color: #8b5cf6; }
+        .day-card.sabado::before { background-color: #d946ef; }
+        .day-card.domingo::before { background-color: var(--primary); }
+
+        .day-header {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #ffffff;
+            margin-bottom: 12px;
+            padding-left: 5px;
+        }
+
+        .task-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .task-item {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            color: var(--text-main);
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            margin-top: 2px;
+        }
+
+        .tag-biz { background-color: var(--tag-biz-bg); color: var(--tag-biz-color); }
+        .tag-dev { background-color: var(--tag-dev-bg); color: var(--tag-dev-color); }
+        .tag-joint { background-color: var(--tag-joint-bg); color: var(--tag-joint-color); }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* Ajustes Finais para Celulares Pequeños */
+        @media (max-width: 480px) {
+            body {
+                padding: 12px 10px;
+            }
+            .task-item {
+                flex-direction: column;
+                gap: 4px;
+            }
+            .tag {
+                align-self: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🚀 Tech4Change 2026 - FIAP</h1>
+        <div class="deadline-badge">⏱️ Prazo Final: Domingo (20/09) às 23h59 via FIAP On</div>
+    </header>
+
+    <div class="alert-box">
+        <strong>⚠️ FOCO TOTAL AGORA:</strong> Faltam 5 dias! O objetivo principal é fechar o escopo do MVP e validar a dor com usuários reais. Evitem over-engineering: focem na funcionalidade central com IA.
+    </div>
+
+    <h2 class="section-title">📌 Checklist do PDF Final</h2>
+    <div class="deliverables-grid">
+        <div class="card">
+            <h3>🎥 Pitch (YouTube)</h3>
+            <p>Vídeo de até 5 min (Público ou Não Listado) apresentando o projeto e a proposta de valor.</p>
+        </div>
+        <div class="card">
+            <h3>📊 Pitch Deck</h3>
+            <p>Apresentação cobrindo dor, solução, MVP, IA, modelo de negócio e validações.</p>
+        </div>
+        <div class="card">
+            <h3>🔗 MVP Funcional</h3>
+            <p>Link do app rodando ou protótipo navegável (ex: Figma) com instruções/credenciais.</p>
+        </div>
+        <div class="card">
+            <h3>📹 Demonstração do MVP</h3>
+            <p>Vídeo demonstrando as principais funcionalidades operando na prática.</p>
+        </div>
+        <div class="card">
+            <h3>💻 Repositório GitHub</h3>
+            <p>Código-fonte + <code>README.md</code> detalhando stack, arquitetura e divisão de papéis da dupla.</p>
+        </div>
+        <div class="card">
+            <h3>📝 Evidências de Validação</h3>
+            <p>Síntese dos resultados de pesquisas, entrevistas e testes realizados com usuários.</p>
+        </div>
+    </div>
+
+    <h2 class="section-title">🗓️ Cronograma da Dupla</h2>
+    <div class="timeline">
+        
+        <div class="day-card terca">
+            <div class="day-header">Terça-feira (15/09) - Alinhamento & Validação</div>
+            <ul class="task-list">
+                <li class="task-item"><span class="tag tag-biz">Negócios</span> Rodar formulário/pesquisa rápida de validação com potenciais usuários.</li>
+                <li class="task-item"><span class="tag tag-dev">Dev</span> Estruturar a arquitetura e o esqueleto do repositório/MVP.</li>
+                <li class="task-item"><span class="tag tag-joint">Juntos</span> Fechar o escopo enxuto do MVP.</li>
+            </ul>
+        </div>
+
+        <div class="day-card quarta">
+            <div class="day-header">Quarta-feira (16/09) - MVP & Pitch Deck</div>
+            <ul class="task-list">
+                <li class="task-item"><span class="tag tag-biz">Negócios</span> Mapear modelo de negócio e montar a estrutura base dos slides.</li>
+                <li class="task-item"><span class="tag tag-dev">Dev</span> Criar o fluxo principal e as telas funcionais da aplicação.</li>
+            </ul>
+        </div>
+
+        <div class="day-card quinta">
+            <div class="day-header">Quinta-feira (17/09) - Dev Final & Documentação</div>
+            <ul class="task-list">
+                <li class="task-item"><span class="tag tag-dev">Dev</span> Subir o código no GitHub, estruturar o README.md e gravar a demo do app.</li>
+                <li class="task-item"><span class="tag tag-biz">Negócios</span> Finalizar os slides do Pitch Deck com os dados das validações.</li>
+            </ul>
+        </div>
+
+        <div class="day-card sexta">
+            <div class="day-header">Sexta-feira (18/09) - Gravação do Pitch</div>
+            <ul class="task-list">
+                <li class="task-item"><span class="tag tag-joint">Juntos</span> Escrever o roteiro do pitch (máximo 5 minutos).</li>
+                <li class="task-item"><span class="tag tag-joint">Juntos</span> Gravar o vídeo de apresentação e publicar no YouTube.</li>
+            </ul>
+        </div>
+
+        <div class="day-card sabado">
+            <div class="day-header">Sábado (19/09) - PDF & Permissões</div>
+            <ul class="task-list">
+                <li class="task-item"><span class="tag tag-biz">Negócios</span> Montar e formatar o PDF final consolidado.</li>
+                <li class="task-item"><span class="tag tag-dev">Dev</span> Testar acesso e permissões públicas/não listadas de todos os links (GitHub, Figma, YouTube).</li>
+            </ul>
+        </div>
+
+        <div class="day-card domingo">
+            <div class="day-header">Domingo (20/09) - Submissão Antecipada</div>
+            <ul class="task-list">
+                <li class="task-item"><span class="tag tag-joint">Juntos</span> Realizar o checklist final do arquivo <code>Tech4Change_NomeDoProjeto_NomeDoGrupo.pdf</code>.</li>
+                <li class="task-item"><span class="tag tag-joint">Juntos</span> Enviar no portal FIAP On bem antes do limite das 23h59!</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>Tech4Change 2026 • FIAP / PosTech</p>
+    </footer>
+</div>
+
+</body>
+</html>
